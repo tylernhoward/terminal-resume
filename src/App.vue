@@ -2,11 +2,11 @@
   <div id="app">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <FloatingActionButton/>
-    <Greeting/>
+    <Greeting :msg= "greetingMsg"/>
     <Terminal/>
     <div class = "footer">
-      <span class="left-align">Made with <i class="far fa-heart"/> using <a class="link fab fa-vuejs" href="https://vuejs.org"role="button"/></span>
-      <span class= "right-align">Updated: 2018</span>
+      <span class="left-align">Made with <i class="far fa-heart"/> using <a class="link fab fa-vuejs" href="https://vuejs.org" role="button"/></span>
+      <span class= "right-align">Updated: {{updatedDate}}</span>
     </div>
   </div>
 </template>
@@ -15,7 +15,9 @@
 import { Component, Vue } from 'vue-property-decorator';
 import FloatingActionButton from './components/FloatingActionButton.vue';
 import Terminal from './components/Terminal.vue';
+import TerminalEmu from './components/TerminalEmu.vue';
 import Greeting from './components/Greeting.vue';
+
 @Component({
   components: {
     FloatingActionButton,
@@ -23,7 +25,10 @@ import Greeting from './components/Greeting.vue';
     Terminal,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  private greetingMsg: string = "Hey there! I'm Tyler."
+  private updatedDate: string = "2018"
+}
 </script>
 
 <style>

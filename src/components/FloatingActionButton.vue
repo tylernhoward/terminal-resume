@@ -1,6 +1,17 @@
 <template>
-<div class = "menu-button">
+<div id="menu-interaction">
+<div class = "menu-button" @click="showMenu = !showMenu">
     <i class="fas fa-bars"></i>
+</div>
+<div class= "menu-container" v-if="showMenu">
+    <div class ="arrow-up"></div>
+    <div class="menu" @mouseleave= "showMenu = !showMenu">
+            <a class= "menu-item">Resume</a>
+            <a class= "menu-item">Articles / Publications</a>
+            <a class= "menu-item">Old Site</a>
+            <a class= "menu-item">Markdown Editor</a>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -10,15 +21,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class FloatingActionButton extends Vue {
-
+    private showMenu:boolean = false;
 }
 
 </script>
 <style>
 .menu-button{
     position:fixed;
-    opacity: 0.9;
-    right: 7.5%;
+    right: 40px;
     top:20px;
     display:flex;
     align-items: center;
@@ -28,12 +38,45 @@ export default class FloatingActionButton extends Vue {
     color:#F7F9F9;
     height:35px;
     width:35px;
+    transition: transform 1s;
 }
 .menu-button:hover {
-    color:#28262C;
-    background-color: #058ED9;
+    transform: rotate(90deg);
+    color:#F7F9F9;
+    background-color: #138A36;
     text-decoration: none;
     cursor: pointer;
+}
+.menu-item:hover {
+    color: #87FF65;
+    text-decoration: none;
+    cursor: pointer;
+}
+.arrow-up {
+  position:fixed;
+  right:47px;
+  top:60px;
+  width: 0; 
+  height: 0; 
+  opacity: 0.9;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #28262C;
+}
+.menu{
+    position:fixed;
+    border-radius: 25px;
+    opacity: 0.9;
+    right: 10px;
+    height: 300px;
+    width: 150px;
+    top:70px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #28262C;
+    color:#F7F9F9;
 }
 </style>
 

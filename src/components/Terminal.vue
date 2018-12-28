@@ -6,10 +6,7 @@
             <div class="termCircles" style="background-color:gold;"></div>
             <div class="termCircles" style="background-color:limegreen;"></div>
           </div>
-          <div class= "termContent">
-            <span>[thoward~]$ </span>
-            <input class=commandInput autofocus/>
-          </div>
+          <TerminalEmu :inputLabel= "label"/>
         </div>
       </div>
 </template>
@@ -17,10 +14,14 @@
 <script lang="ts">
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
-
-@Component
+import TerminalEmu from './TerminalEmu.vue';
+@Component({
+  components: {
+    TerminalEmu
+  }
+})
 export default class Terminal extends Vue {
-
+  private label:string = "[thoward~]$"
 }
 
 </script>
@@ -46,15 +47,6 @@ export default class Terminal extends Vue {
     background: transparent;
     outline: none;
     color: inherit;
-}
-
-.termContent{
-    padding-top: 5px;
-    padding-left: 10px;
-    text-align: left;
-    font-family: 'Monaco', 'Courier New';
-    font-size: 14px;
-    color: white;
 }
 
 .bar{
