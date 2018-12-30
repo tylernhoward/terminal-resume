@@ -6,10 +6,10 @@
 <div class= "menu-container" v-if="showMenu">
     <div class ="arrow-up"></div>
     <div class="menu" @mouseleave= "showMenu = !showMenu">
-            <a class= "menu-item">Resume</a>
-            <a class= "menu-item">Articles / Publications</a>
-            <a class= "menu-item">Old Site</a>
-            <a class= "menu-item">Markdown Editor</a>
+            <a class= "menu-item" href = "/Tyler_Howard_Resume.pdf">Resume</a>
+            <a class= "menu-item" href = "/ISI_2018_paper_108.pdf">Articles / Publications</a>
+            <a class= "menu-item" href = "http://www.tylernhoward.com/old-site">Old Site</a>
+            <a class= "menu-item" href = "http://www.tylernhoward.com/markdowner">Markdown Editor</a>
         </div>
     </div>
 </div>
@@ -46,6 +46,10 @@ export default class FloatingActionButton extends Vue {
     background-color: #138A36;
     text-decoration: none;
     cursor: pointer;
+}
+.menu-item{
+    color:#F7F9F9;
+    text-decoration: none;
 }
 .menu-item:hover {
     color: #87FF65;

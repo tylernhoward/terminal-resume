@@ -1,8 +1,10 @@
 <template>
-<div class="termContent">
-    <div class ="output" v-if="output">{{ output }}</div>
-    <span>{{ inputLabel }}&nbsp;</span>
-	<input v-on:keyup.enter="commandEntered" v-model="command" class=commandInput autofocus/>
+<div class ="terminal">
+    <div class="termContent">
+        <div class ="output" v-if="output">{{ output }}</div>
+        <span>{{ inputLabel }}&nbsp;</span>
+        <input v-on:keyup.enter="commandEntered" v-model="command" class=commandInput autofocus/>
+    </div>
 </div>
 </template>
 
@@ -61,10 +63,10 @@ export default class TerminalEmu extends Vue {
                 this.setOutput(this.printAbout());
                 break;
             case Command.Resume:
-                console.log(command);
+                this.setOutput(this.printSkills());
                 break;
             case Command.Projects:
-                console.log(command);
+                this.$root.$emit('toggle-finder');
                 break;
             default:
                 this.setOutput(`Command: '${command}' not found`);
@@ -80,11 +82,11 @@ export default class TerminalEmu extends Vue {
     /* return help screen output with list of commands */
     private printHelp(): String{
         return `List of tasks with descriptions
-    clear    - clears output window
-    history  - list previous commands entered by user
-    whoami   - about the user
-    resume   - prints resume content of user
-    projects - list personal projects of user`;
+    ${Command.Help}    - clears output window
+    ${Command.History}  - list previous commands entered by user
+    ${Command.About}   - about the user
+    ${Command.Resume}   - prints resume content of the user
+    ${Command.Projects} - open personal projects of user`;
     }
 
     /* return output of past 10 commands entered for gimmicky purposes */
@@ -106,13 +108,33 @@ export default class TerminalEmu extends Vue {
     Employment =    Contrast Security
                     Startup located in Baltimore, MD, 
                     specializing in runtime application self-protection (RASP)
-    
+
     Free Time  = {  messing around with webdev,
                     film photography,
                     video games,
                     playing guitar,
                     tinkering with old cars  }
 `
+    }
+    private printSkills(): String{
+        return `Experience and Skills:
+    Primary Languages = {
+        Java,
+        TypeScript
+    }
+    Experienced in Front-End Frameworks = {
+        Angular,
+        Vue,
+        React
+    }
+    Knowledge and Interests = {
+        Object Oriented Design,
+        AWS Lambda,
+        Full Stack Web Development
+    }
+    
+     Resume available on sidebar!
+    `
     }
 
 }
@@ -121,7 +143,7 @@ enum Command {
         Clear = "clear",
         History = "history",
         About = "whoami",
-        Resume = "resume",
+        Resume = "skills",
         Projects = "projects",
 };
 
@@ -144,13 +166,17 @@ enum Command {
     outline: none;
     color: inherit;
 }
+.terminal{
+    color: #87FF65;
+    background-color: #28262C;
+    height: 100%;
+}
 
 .termContent{
-    padding-top: 5px;
+    padding-top: 25px;
     padding-left: 10px;
     text-align: left;
     font-family: 'Monaco', 'Courier New';
     font-size: 14px;
-    color: #87FF65;
 }
 </style>

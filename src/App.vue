@@ -3,7 +3,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <FloatingActionButton/>
     <Greeting :msg= "greetingMsg"/>
-    <Terminal/>
+    <Window/>
+    <!-- <span>Source: <a href="https://github.com/tylernhoward/terminal-resume" class = "fab fa-github"/></span> -->
     <div class = "footer">
       <span class="left-align">Made with <i class="far fa-heart"/> using <a class="link fab fa-vuejs" href="https://vuejs.org" role="button"/></span>
       <span class= "right-align">Updated: {{updatedDate}}</span>
@@ -14,15 +15,14 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import FloatingActionButton from './components/FloatingActionButton.vue';
-import Terminal from './components/Terminal.vue';
-import TerminalEmu from './components/TerminalEmu.vue';
+import Window from './components/Window.vue';
 import Greeting from './components/Greeting.vue';
 
 @Component({
   components: {
     FloatingActionButton,
     Greeting,
-    Terminal,
+    Window,
   },
 })
 export default class App extends Vue {
