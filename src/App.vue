@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <FloatingActionButton/>
-    <Greeting :msg= "greetingMsg"/>
-    <Window/>
+    <FloatingActionButton id="fab"/>
+    <Greeting id="greeting" :msg= "greetingMsg"/>
+    <Window id="window"/>
     <!-- <span>Source: <a href="https://github.com/tylernhoward/terminal-resume" class = "fab fa-github"/></span> -->
     <div class = "footer">
       <span class="left-align">Made with <i class="far fa-heart"/> using <a class="link fab fa-vuejs" href="https://vuejs.org" role="button"/></span>
@@ -39,6 +39,15 @@ export default class App extends Vue {
     text-align: center;
     color: #171D1C;
   }
+  @media only screen and (max-width : 700px) {
+    #window{
+        display:none !important;
+    }
+    #greeting{
+        padding-top: 15vh;
+    }
+  }
+
   .left-align{
     padding-left:  5px;
     float:left;  

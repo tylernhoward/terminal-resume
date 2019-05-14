@@ -1,20 +1,16 @@
 <template>
 <div class="finder">
     <div class="grid">
-        <div class = "row">
             <FinderItem name = "CLARK"/>
             <FinderItem name = "Security Injections"/>
             <FinderItem name = "Markdown Editor"/>
             <FinderItem name = "Job Jar"/>
             <FinderItem name = "Lol CLI"/>
-        </div>
-        <div class = "row">
             <FinderItem name = "Phishing Visualization"/>
             <FinderItem name = "WWYDH"/>
             <FinderItem name = "Photo Spot"/>
             <FinderItem name = "HeRO"/>
             <FinderItem name = "Morning Briefing"/>
-        </div>
     </div>
     <ProjectModal :data="projectDataMap"/>
 </div>
@@ -131,21 +127,14 @@ enum Projects {
     .finder{
         color: black;
         background-color: white;
-        height: 100%;
+        overflow:auto;
+        height:inherit;
     }
     .grid{
-        padding-top:20px;
-        padding-left: 20px;
-        padding-right:20px;
         display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items:center;
+        justify-content: center;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
-    .row{
-        width:100%;
-        padding:10px;
-        display: flex;
-        justify-content: space-evenly;
-    }
+
 </style>

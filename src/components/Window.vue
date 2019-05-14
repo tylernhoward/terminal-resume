@@ -49,13 +49,15 @@ export default class Terminal extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .container {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
+
 .window {
     height: 50vh;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
     width: 70%;
+    overflow: auto;
 }
 
 .bar{
@@ -63,6 +65,7 @@ export default class Terminal extends Vue {
     width:inherit;
     height: 20px;
     background-color: #DBDBDB;
+    z-index: 99 !important;
 }
 
 .circle-bar{
@@ -81,11 +84,11 @@ export default class Terminal extends Vue {
 }
 
 .title-bar{
-  z-index: 1;
-  top: -20px;
-  position: relative;
-  display: flex;
-  align-items:center;
-  justify-content:center;
+    z-index: 1;
+    top: -20px;
+    position: relative;
+    display: flex;
+    align-items:center;
+    justify-content:center;
 }
 </style>

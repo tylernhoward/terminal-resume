@@ -153,7 +153,7 @@ enum Command {
 <style scoped>
 
 .output{
-      white-space: pre
+    white-space: pre-wrap;
 }
 .commandInput {
     padding-top:5px;
@@ -169,10 +169,12 @@ enum Command {
 .terminal{
     color: #87FF65;
     background-color: #28262C;
-    height: 100%;
+    overflow:auto;
+    height:inherit;
 }
 
 .termContent{
+    overflow: auto;
     padding-top: 25px;
     padding-left: 10px;
     text-align: left;

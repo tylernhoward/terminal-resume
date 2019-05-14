@@ -57,17 +57,18 @@ export default class FloatingActionButton extends Vue {
     cursor: pointer;
 }
 .arrow-up {
-  position:fixed;
-  right:47px;
-  top:60px;
-  width: 0; 
-  height: 0; 
-  opacity: 0.9;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #28262C;
+    position:fixed;
+    right:47px;
+    top:60px;
+    width: 0; 
+    height: 0; 
+    opacity: 0.9;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #28262C;
 }
 .menu{
+    z-index: 999 !important;
     position:fixed;
     border-radius: 25px;
     opacity: 0.9;

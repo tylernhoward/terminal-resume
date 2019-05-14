@@ -18,6 +18,7 @@ export default class FinderItem extends Vue {
 </script>
 <style scoped>
     .item{
+        margin:30px;
         text-decoration:none;
         padding:30px 20px 10px;
     }
