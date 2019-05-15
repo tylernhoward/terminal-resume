@@ -1,9 +1,9 @@
 <template>
 <!-- template for the modal component -->
   <div name="modal" v-if="showModal">
-    <div class="modal-mask">
+    <div class="modal-mask" @click="$root.$emit('toggle-modal')">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-container" @click="$root.$emit('toggle-modal')">
             <div class= "modal-bar">
                 <div class="modal-close" @click="$root.$emit('toggle-modal')"></div>
                 <span class="modal-header">{{ name }}</span>
@@ -13,8 +13,8 @@
                 <div class ="description"> 
                     <p>{{ project.description }}</p>
                     <div class="btn-group">
-                        <a class = "modal-btn" v-if ="project.githubUrl" v-bind:href="project.githubUrl">Github <i class="fab fa-github"></i></a>
-                        <a class = "modal-btn" v-if ="project.exploreUrl" v-bind:href="project.exploreUrl">Explore <i class="far fa-compass"></i></a>
+                        <a class = "modal-btn" v-if ="project.githubUrl" v-bind:href="project.githubUrl" target="_blank">Github <i class="fab fa-github"></i></a>
+                        <a class = "modal-btn" v-if ="project.exploreUrl" v-bind:href="project.exploreUrl" target="_blank">Explore <i class="far fa-compass"></i></a>
                     </div>
                 </div>
             </div>
@@ -56,9 +56,14 @@ export default class ProjectModal extends Vue {
 </script>
 
 <style scoped>
+
+p{
+  line-height:2;
+  padding:10px;
+}
 .modal-mask {
   position: fixed;
-  z-index: 9998;
+  z-index: 100;
   top: 0;
   left: 0;
   width: 100%;
@@ -74,7 +79,7 @@ export default class ProjectModal extends Vue {
 }
 
 .modal-container {
-  width: 50%;
+  width: 70%;
   height:fit-content;
   margin: 0px auto;
   background-color: #fff;
@@ -134,7 +139,7 @@ export default class ProjectModal extends Vue {
 }
 .modal-btn:hover{
     padding:4px;
-    border:deepskyblue solid 1px;
+    border: #87FF65 solid 1px;
 }
 
 

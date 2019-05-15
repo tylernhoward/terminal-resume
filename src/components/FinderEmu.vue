@@ -31,10 +31,11 @@ import {ProjectData} from './ProjectData'
 export default class FinderEmu extends Vue {
     private projectDataMap: Map<string, ProjectData> = new Map([
         [Projects.CLARK,{
-            description:"kdjhsfkhsdf",
-            image: "../assets/",
+            description:`Developer on team responsible for implementing a Cybersecurity curriculum management platform to curate and share learning objectives in academia. 
+            Application uses new web technologies and the MEAN stack as part of a project funded by the National Science Foundation.`,
+            image: "clark.png",
             githubUrl:"",
-            exploreUrl:""
+            exploreUrl:"https://clark.center"
         }],
         [Projects.SecurityInjections,{
             description:`Worked for the Computer and Information Sciences department in a small team as a lead developer responsible
@@ -48,20 +49,20 @@ export default class FinderEmu extends Vue {
         }],
         [Projects.MarkdownEditor,{
             description:"WYSIWYG editor for markdown using a self-ported library (ng-tui-editor) for Angular 2+",
-            image: "",
-            githubUrl:"",
-            exploreUrl:""
+            image: "markdowner.png",
+            githubUrl:"https://github.com/tylernhoward/ngx-tui-editor",
+            exploreUrl:"http://www.tylernhoward.com/markdowner"
         }],
         [Projects.JobJar,{
-            description:"Simple Alexa skill that randomly selects a household chore you have added to help you stop procrastinating",
+            description:"Simple Alexa skill that randomly selects a household chore you have added to a list to help you stop procrastinating",
             image: "",
-            githubUrl:"",
+            githubUrl:"https://github.com/tylernhoward/alexa-job-jar",
             exploreUrl:""
         }],
         [Projects.LolCLI,{
             description:"Tiny command-line app hosted on NPM that outputs multiple categories of jokes retrieved from Reddit",
-            image: "",
-            githubUrl:"",
+            image: "lol.png",
+            githubUrl:"https://github.com/tylernhoward/lol-node-cli",
             exploreUrl:""
         }],
         [Projects.PhishingVisualization,{
@@ -84,7 +85,7 @@ export default class FinderEmu extends Vue {
         }],
         [Projects.PhotoSpot,{
             description:"Android application that utilizes location services to pull local pictures from the Flickr API.",
-            image: "photospot.jpg",
+            image: "photospot-small.png",
             githubUrl:"https://github.com/tylernhoward/Photo-Spot.git",
             exploreUrl:""
         }],

@@ -70,7 +70,7 @@ export default class FloatingActionButton extends Vue {
 .menu{
     z-index: 999 !important;
     position:fixed;
-    border-radius: 25px;
+    border-radius: 10px;
     opacity: 0.9;
     right: 10px;
     height: 300px;
