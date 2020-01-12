@@ -27,7 +27,7 @@ import Greeting from './components/Greeting.vue';
 })
 export default class App extends Vue {
   private greetingMsg: string = "Hey there! I'm Tyler."
-  private updatedDate: string = new Date().getFullYear()
+  private updatedDate: string = new Date().getFullYear().toString()
 }
 </script>
 
