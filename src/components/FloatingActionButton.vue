@@ -8,8 +8,8 @@
     <div class="menu" @mouseleave= "showMenu = !showMenu">
             <a class= "menu-item" href = "/Tyler_Howard_Resume.pdf">Resume</a>
             <a class= "menu-item" href = "/ISI_2018_paper_108.pdf">Articles / Publications</a>
-            <a class= "menu-item" href = "http://www.tylernhoward.com/old-site">Old Site</a>
-            <a class= "menu-item" href = "http://www.tylernhoward.com/markdowner">Markdown Editor</a>
+            <a class= "menu-item" href = "https://tylernhoward.github.io/old-site">Old Site</a>
+            <a class= "menu-item" href = "https://tylernhoward.github.io/markdowner">Markdown Editor</a>
         </div>
     </div>
 </div>
