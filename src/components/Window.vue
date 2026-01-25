@@ -2,12 +2,30 @@
   <div class="container">
     <div class="window">
       <div class="bar">
-        <div class="circle-bar">
-          <div class="circle close" @click="showFinder = false; windowTitle = 'Terminal'"></div>
-          <div class="circle minimize" @click="toggleFinder"></div>
-          <div class="circle maximize"></div>
+        <div class="traffic-lights">
+          <button
+            class="traffic-light close"
+            @click="showFinder = false; windowTitle = 'Terminal'"
+            aria-label="Close"
+          >
+            <svg viewBox="0 0 12 12"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button
+            class="traffic-light minimize"
+            @click="toggleFinder"
+            aria-label="Minimize"
+          >
+            <svg viewBox="0 0 12 12"><path d="M2.5 6h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button
+            class="traffic-light maximize"
+            aria-label="Maximize"
+          >
+            <svg viewBox="0 0 12 12"><path d="M3 3h6v6H3z" stroke="currentColor" stroke-width="1.25" fill="none"/></svg>
+          </button>
         </div>
         <div class="title-bar">
+          <span class="window-icon">{{ showFinder ? '📁' : '⌘' }}</span>
           <span class="title">{{ windowTitle }}</span>
         </div>
       </div>
@@ -54,112 +72,143 @@ onUnmounted(() => {
   width: 100%;
   max-width: 900px;
   height: 50vh;
-  min-height: 300px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
+  width: 70%;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.bar {
-  height: 28px;
-  min-height: 28px;
-  background-color: #DBDBDB;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
+  border-radius: 10px;
+  box-shadow:
+    0 22px 70px 4px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
-.circle-bar {
+.bar {
+  position: absolute;
+  width: 100%;
+  height: 38px;
+  background: linear-gradient(180deg, #E8E8E8 0%, #D4D4D4 100%);
+  border-bottom: 1px solid #B8B8B8;
+  z-index: 99;
   display: flex;
-  gap: 6px;
+  align-items: center;
+  backdrop-filter: blur(20px);
+}
+
+.traffic-lights {
+  display: flex;
+  gap: 8px;
+  padding-left: 12px;
   z-index: 2;
 }
 
-.circle {
+.traffic-light {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: #cccccc solid 1px;
+  border: none;
   cursor: pointer;
-  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: filter 0.15s ease;
 }
 
-.circle:hover {
-  opacity: 0.8;
+.traffic-light svg {
+  width: 8px;
+  height: 8px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  color: rgba(0, 0, 0, 0.5);
 }
 
-.circle.close {
-  background-color: #ff5f57;
+.bar:hover .traffic-light svg {
+  opacity: 1;
 }
 
-.circle.minimize {
-  background-color: #ffbd2e;
+.traffic-light.close {
+  background: linear-gradient(180deg, #FF6058 0%, #E14640 100%);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-.circle.maximize {
-  background-color: #28c840;
+.traffic-light.close:hover {
+  filter: brightness(0.9);
+}
+
+.traffic-light.minimize {
+  background: linear-gradient(180deg, #FFBF2F 0%, #DEA514 100%);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.traffic-light.minimize:hover {
+  filter: brightness(0.9);
+}
+
+.traffic-light.maximize {
+  background: linear-gradient(180deg, #2ACB42 0%, #1AAB29 100%);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.traffic-light.maximize:hover {
+  filter: brightness(0.9);
 }
 
 .title-bar {
   position: absolute;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 13px;
-  color: #4d4d4d;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   pointer-events: none;
 }
 
-.window-content {
-  flex: 1;
-  overflow: auto;
+.window-icon {
+  font-size: 14px;
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .container {
-    padding: 0 15px;
-  }
-
-  .window {
-    height: 45vh;
-  }
+.title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  letter-spacing: -0.2px;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 10px;
-  }
-
+@media only screen and (max-width: 768px) {
   .window {
-    height: 40vh;
-    min-height: 250px;
+    width: 95%;
+    height: 55vh;
   }
 
   .bar {
-    height: 24px;
-    min-height: 24px;
+    height: 32px;
   }
 
-  .circle {
+  .traffic-light {
     width: 10px;
     height: 10px;
   }
 
-  .title-bar {
+  .traffic-light svg {
+    width: 6px;
+    height: 6px;
+  }
+
+  .title {
     font-size: 12px;
   }
 }
 
-/* Small mobile */
-@media (max-width: 480px) {
+@media only screen and (max-width: 480px) {
   .window {
-    height: 35vh;
-    min-height: 200px;
+    width: 100%;
+    height: 50vh;
+    border-radius: 0;
   }
 }
 </style>

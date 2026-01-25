@@ -1,10 +1,19 @@
 <template>
-  <div class="terminal">
+  <div class="terminal" @click="focusInput">
     <div class="termContent">
       <div class="output" v-if="output">{{ output }}</div>
       <div class="input-line">
-        <span class="prompt">{{ inputLabel }}&nbsp;</span>
-        <input v-on:keyup.enter="commandEntered" v-model="command" class="commandInput" autofocus/>
+        <span class="prompt">{{ inputLabel }}</span>
+        <span class="typed-text">{{ command }}</span><span class="cursor"></span>
+        <input
+          ref="inputRef"
+          v-on:keyup.enter="commandEntered"
+          v-model="command"
+          class="commandInput"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+        />
       </div>
     </div>
   </div>
@@ -19,9 +28,14 @@ defineProps<{
   inputLabel: string
 }>()
 
+const inputRef = ref<HTMLInputElement | null>(null)
 const output = ref('')
 const command = ref('')
 const history = ref<string[]>([])
+
+function focusInput() {
+  inputRef.value?.focus()
+}
 
 enum Command {
   Help = 'help',
@@ -150,74 +164,130 @@ function commandEntered() {
 
 onMounted(() => {
   output.value = `${printAbout()}\nEnter 'help' for list of commands\n`
+  focusInput()
 })
 </script>
 
 <style scoped>
 .terminal {
-  color: #87FF65;
-  background-color: #28262C;
-  height: 100%;
+  background: linear-gradient(180deg, #1E1E1E 0%, #161616 100%);
   overflow: auto;
+  height: calc(100% - 38px);
+  margin-top: 38px;
+  cursor: text;
+}
+
+.terminal::-webkit-scrollbar {
+  width: 14px;
+}
+
+.terminal::-webkit-scrollbar-track {
+  background: #1E1E1E;
+}
+
+.terminal::-webkit-scrollbar-thumb {
+  background: #3A3A3A;
+  border-radius: 7px;
+  border: 3px solid #1E1E1E;
+}
+
+.terminal::-webkit-scrollbar-thumb:hover {
+  background: #4A4A4A;
 }
 
 .termContent {
-  padding: 20px 15px;
+  padding: 12px 16px;
   text-align: left;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
-  min-height: 100%;
+  font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #C7C7C7;
 }
 
 .output {
   white-space: pre-wrap;
   word-break: break-word;
-  margin-bottom: 10px;
+  color: #E0E0E0;
+  margin-bottom: 8px;
 }
 
 .input-line {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  position: relative;
 }
 
 .prompt {
-  white-space: nowrap;
+  color: #32D74B;
+  font-weight: 500;
+  margin-right: 6px;
+  text-shadow: 0 0 10px rgba(50, 215, 75, 0.3);
+}
+
+.typed-text {
+  color: #FFFFFF;
+  white-space: pre;
 }
 
 .commandInput {
-  flex: 1;
-  min-width: 100px;
-  font-family: inherit;
-  font-size: inherit;
-  border: none;
-  background: transparent;
-  outline: none;
-  color: inherit;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
   padding: 0;
+  border: none;
+  pointer-events: none;
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .termContent {
-    font-size: 13px;
-    padding: 15px 12px;
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 17px;
+  background: #32D74B;
+  animation: blink 1s step-end infinite;
+  box-shadow: 0 0 8px rgba(50, 215, 75, 0.5);
+  flex-shrink: 0;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
   }
 }
 
-/* Mobile */
-@media (max-width: 768px) {
+/* Selection styling */
+.commandInput::selection {
+  background: rgba(50, 215, 75, 0.3);
+}
+
+.output::selection {
+  background: rgba(50, 215, 75, 0.3);
+}
+
+@media only screen and (max-width: 768px) {
+  .terminal {
+    height: calc(100% - 32px);
+    margin-top: 32px;
+  }
+
   .termContent {
     font-size: 12px;
-    padding: 12px 10px;
+    padding: 10px 12px;
+  }
+
+  .cursor {
+    width: 7px;
+    height: 15px;
   }
 }
 
-/* Small mobile */
-@media (max-width: 480px) {
+@media only screen and (max-width: 480px) {
   .termContent {
     font-size: 11px;
-    padding: 10px 8px;
+    padding: 8px 10px;
   }
 }
 </style>

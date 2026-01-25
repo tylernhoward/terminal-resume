@@ -1,16 +1,47 @@
 <template>
   <div class="finder">
-    <div class="grid">
-      <FinderItem name="CLARK"/>
-      <FinderItem name="Security Injections"/>
-      <FinderItem name="Markdown Editor"/>
-      <FinderItem name="Job Jar"/>
-      <FinderItem name="Lol CLI"/>
-      <FinderItem name="Phishing Visualization"/>
-      <FinderItem name="WWYDH"/>
-      <FinderItem name="Photo Spot"/>
-      <FinderItem name="HeRO"/>
-      <FinderItem name="Morning Briefing"/>
+    <div class="finder-toolbar">
+      <div class="toolbar-left">
+        <button class="toolbar-btn" disabled>
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 3L5.5 8l5 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn" disabled>
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 3L10.5 8l-5 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="toolbar-center">
+        <div class="breadcrumb">
+          <span class="breadcrumb-icon">📁</span>
+          <span class="breadcrumb-text">Projects</span>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <div class="view-toggle">
+          <button class="view-btn active" title="Icon view">
+            <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor"/></svg>
+          </button>
+          <button class="view-btn" title="List view">
+            <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="2" rx="0.5" fill="currentColor"/><rect x="2" y="7" width="12" height="2" rx="0.5" fill="currentColor"/><rect x="2" y="11" width="12" height="2" rx="0.5" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="finder-content">
+      <div class="grid">
+        <FinderItem name="CLARK"/>
+        <FinderItem name="Security Injections"/>
+        <FinderItem name="Markdown Editor"/>
+        <FinderItem name="Job Jar"/>
+        <FinderItem name="Lol CLI"/>
+        <FinderItem name="Phishing Visualization"/>
+        <FinderItem name="WWYDH"/>
+        <FinderItem name="Photo Spot"/>
+        <FinderItem name="HeRO"/>
+        <FinderItem name="Morning Briefing"/>
+      </div>
+    </div>
+    <div class="finder-status">
+      <span>10 items</span>
     </div>
     <ProjectModal :data="projectDataMap"/>
   </div>
@@ -117,28 +148,197 @@ const projectDataMap = new Map<string, ProjectData>([
 
 <style scoped>
 .finder {
-  color: black;
-  background-color: white;
-  height: 100%;
+  color: #1D1D1F;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F7 100%);
+  height: calc(100% - 38px);
+  margin-top: 38px;
+  display: flex;
+  flex-direction: column;
+}
+
+.finder-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #F8F8F8 0%, #ECECEC 100%);
+  border-bottom: 1px solid #D1D1D1;
+  min-height: 32px;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.toolbar-btn {
+  width: 28px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1D1D1F;
+  transition: background 0.15s ease;
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.toolbar-btn:not(:disabled):hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.toolbar-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+}
+
+.breadcrumb-icon {
+  font-size: 14px;
+}
+
+.breadcrumb-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1D1D1F;
+}
+
+.view-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.view-btn {
+  width: 26px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6E6E73;
+  transition: all 0.15s ease;
+}
+
+.view-btn.active {
+  background: white;
+  color: #1D1D1F;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.view-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.finder-content {
+  flex: 1;
   overflow: auto;
-  padding: 10px;
+  padding: 16px;
+}
+
+.finder-content::-webkit-scrollbar {
+  width: 14px;
+}
+
+.finder-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.finder-content::-webkit-scrollbar-thumb {
+  background: #C7C7CC;
+  border-radius: 7px;
+  border: 3px solid #F5F5F7;
+}
+
+.finder-content::-webkit-scrollbar-thumb:hover {
+  background: #A8A8AD;
 }
 
 .grid {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  justify-items: center;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
+.finder-status {
+  padding: 4px 12px;
+  background: linear-gradient(180deg, #F8F8F8 0%, #ECECEC 100%);
+  border-top: 1px solid #D1D1D1;
+  font-size: 11px;
+  color: #6E6E73;
+  text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
   .finder {
-    padding: 5px;
+    height: calc(100% - 32px);
+    margin-top: 32px;
+  }
+
+  .finder-toolbar {
+    padding: 4px 8px;
+    min-height: 28px;
+  }
+
+  .breadcrumb {
+    padding: 3px 8px;
+  }
+
+  .breadcrumb-text {
+    font-size: 12px;
   }
 
   .grid {
-    gap: 0;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 4px;
+  }
+
+  .finder-content {
+    padding: 12px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .toolbar-left,
+  .toolbar-right {
+    display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+
+  .finder-content {
+    padding: 8px;
   }
 }
 </style>
