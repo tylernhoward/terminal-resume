@@ -1,32 +1,26 @@
 <template>
-  <Teleport to="body">
-    <Transition name="modal">
-      <div v-if="showModal" class="modal-mask" @click="closeModal">
-        <div class="modal-wrapper">
-          <div class="modal-container" @click.stop>
-            <div class="modal-bar">
-              <div class="modal-close" @click="closeModal"></div>
-              <span class="modal-header">{{ name }}</span>
-            </div>
-            <div class="modal-body">
-              <img class="image-box" v-if="project?.image" :src="project.image" :alt="name"/>
-              <div class="description">
-                <p>{{ project?.description }}</p>
-                <div class="btn-group">
-                  <a class="modal-btn" v-if="project?.githubUrl" :href="project.githubUrl" target="_blank" rel="noopener">
-                    <i class="fab fa-github"></i> Github
-                  </a>
-                  <a class="modal-btn" v-if="project?.exploreUrl" :href="project.exploreUrl" target="_blank" rel="noopener">
-                    <i class="far fa-compass"></i> Explore
-                  </a>
-                </div>
+  <div name="modal" v-if="showModal">
+    <div class="modal-mask" @click="closeModal">
+      <div class="modal-wrapper">
+        <div class="modal-container" @click.stop>
+          <div class="modal-bar">
+            <div class="modal-close" @click="closeModal"></div>
+            <span class="modal-header">{{ name }}</span>
+          </div>
+          <div class="modal-body">
+            <img class="image-box" v-if="project?.image" :src="project.image"/>
+            <div class="description">
+              <p>{{ project?.description }}</p>
+              <div class="btn-group">
+                <a class="modal-btn" v-if="project?.githubUrl" :href="project.githubUrl" target="_blank">Github <i class="fab fa-github"></i></a>
+                <a class="modal-btn" v-if="project?.exploreUrl" :href="project.exploreUrl" target="_blank">Explore <i class="far fa-compass"></i></a>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </Transition>
-  </Teleport>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -55,217 +49,120 @@ function closeModal() {
   showModal.value = false
 }
 
-function handleEscape(e: KeyboardEvent) {
-  if (e.key === 'Escape') closeModal()
-}
-
 onMounted(() => {
   eventBus.on('toggle-modal', handleToggleModal)
-  document.addEventListener('keydown', handleEscape)
 })
 
 onUnmounted(() => {
   eventBus.off('toggle-modal', handleToggleModal)
-  document.removeEventListener('keydown', handleEscape)
 })
 </script>
 
 <style scoped>
+p {
+  line-height: 2;
+  padding: 10px;
+}
+
 .modal-mask {
   position: fixed;
-  z-index: 1000;
+  z-index: 100;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
 }
 
 .modal-wrapper {
-  width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow: auto;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 .modal-container {
+  width: 70%;
+  height: fit-content;
+  margin: 0px auto;
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  transition: all .3s ease;
 }
 
 .modal-bar {
-  background-color: #e8e8e8;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  border-radius: 6px 6px 0px 0px;
+  background-color: gainsboro;
+  width: 100%;
+  height: 20px;
 }
 
 .modal-close {
+  z-index: 2;
+  margin: 3px;
+  background-color: tomato;
+  border-radius: 50%;
+  border: #cccccc solid 1px;
   width: 12px;
   height: 12px;
-  background-color: #ff5f57;
-  border-radius: 50%;
+  position: relative;
+  top: 0;
+  float: left;
   cursor: pointer;
-  flex-shrink: 0;
-}
-
-.modal-close:hover {
-  opacity: 0.8;
-}
-
-.modal-header {
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
 }
 
 .modal-body {
   display: flex;
-  padding: 20px;
-  gap: 20px;
+  padding: 10px;
 }
 
 .image-box {
-  width: 45%;
-  max-width: 350px;
-  height: auto;
-  object-fit: contain;
-  border-radius: 4px;
-  flex-shrink: 0;
+  width: 50%;
+  height: 100%;
 }
 
 .description {
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.description p {
-  line-height: 1.7;
-  margin: 0 0 15px 0;
-  font-size: 14px;
-  color: #444;
+  padding-left: 20px;
+  text-align: left;
 }
 
 .btn-group {
+  width: 100%;
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .modal-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #333;
+  color: black;
   text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  background-color: #f0f0f0;
-  font-size: 13px;
-  transition: all 0.2s;
+  width: fit-content;
+  padding: 5px;
+  margin: 0px 5px;
+  border-radius: 5px 5px 5px 5px;
+  background-color: gainsboro;
 }
 
 .modal-btn:hover {
-  background-color: #28262C;
-  color: #87FF65;
+  padding: 4px;
+  border: #87FF65 solid 1px;
 }
 
-/* Transitions */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
+.modal-enter {
   opacity: 0;
 }
 
-.modal-enter-active .modal-container,
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
 .modal-leave-active .modal-container {
-  transition: transform 0.25s ease;
-}
-
-.modal-enter-from .modal-container,
-.modal-leave-to .modal-container {
-  transform: scale(0.95);
-}
-
-/* Tablet */
-@media (max-width: 1024px) {
-  .modal-body {
-    padding: 15px;
-    gap: 15px;
-  }
-
-  .image-box {
-    width: 40%;
-  }
-
-  .description p {
-    font-size: 13px;
-  }
-}
-
-/* Mobile - stack vertically */
-@media (max-width: 768px) {
-  .modal-mask {
-    padding: 10px;
-  }
-
-  .modal-body {
-    flex-direction: column;
-    padding: 15px;
-    gap: 15px;
-  }
-
-  .image-box {
-    width: 100%;
-    max-width: none;
-    max-height: 200px;
-    object-fit: cover;
-  }
-
-  .description p {
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .btn-group {
-    justify-content: center;
-  }
-
-  .modal-btn {
-    padding: 10px 20px;
-  }
-}
-
-/* Small mobile */
-@media (max-width: 480px) {
-  .modal-header {
-    font-size: 13px;
-  }
-
-  .modal-body {
-    padding: 12px;
-  }
-
-  .description p {
-    font-size: 12px;
-  }
-
-  .modal-btn {
-    font-size: 12px;
-    padding: 8px 14px;
-  }
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 </style>

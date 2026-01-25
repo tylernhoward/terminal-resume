@@ -2,10 +2,8 @@
   <div class="terminal">
     <div class="termContent">
       <div class="output" v-if="output">{{ output }}</div>
-      <div class="input-line">
-        <span class="prompt">{{ inputLabel }}&nbsp;</span>
-        <input v-on:keyup.enter="commandEntered" v-model="command" class="commandInput" autofocus/>
-      </div>
+      <span>{{ inputLabel }}&nbsp;</span>
+      <input v-on:keyup.enter="commandEntered" v-model="command" class="commandInput" autofocus/>
     </div>
   </div>
 </template>
@@ -154,70 +152,35 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.terminal {
-  color: #87FF65;
-  background-color: #28262C;
-  height: 100%;
-  overflow: auto;
-}
-
-.termContent {
-  padding: 20px 15px;
-  text-align: left;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
-  min-height: 100%;
-}
-
 .output {
   white-space: pre-wrap;
-  word-break: break-word;
-  margin-bottom: 10px;
-}
-
-.input-line {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.prompt {
-  white-space: nowrap;
 }
 
 .commandInput {
-  flex: 1;
-  min-width: 100px;
+  padding-top: 5px;
+  width: 80%;
+  text-overflow: ellipsis;
   font-family: inherit;
   font-size: inherit;
   border: none;
   background: transparent;
   outline: none;
   color: inherit;
-  padding: 0;
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .termContent {
-    font-size: 13px;
-    padding: 15px 12px;
-  }
+.terminal {
+  color: #87FF65;
+  background-color: #28262C;
+  overflow: auto;
+  height: inherit;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  .termContent {
-    font-size: 12px;
-    padding: 12px 10px;
-  }
-}
-
-/* Small mobile */
-@media (max-width: 480px) {
-  .termContent {
-    font-size: 11px;
-    padding: 10px 8px;
-  }
+.termContent {
+  overflow: auto;
+  padding-top: 25px;
+  padding-left: 10px;
+  text-align: left;
+  font-family: 'Monaco', 'Courier New';
+  font-size: 14px;
 }
 </style>

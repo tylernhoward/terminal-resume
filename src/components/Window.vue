@@ -3,18 +3,16 @@
     <div class="window">
       <div class="bar">
         <div class="circle-bar">
-          <div class="circle close" @click="showFinder = false; windowTitle = 'Terminal'"></div>
-          <div class="circle minimize" @click="toggleFinder"></div>
-          <div class="circle maximize"></div>
+          <div class="circle" style="background-color:tomato;" @click="showFinder = false; windowTitle = 'Terminal'"></div>
+          <div class="circle" style="background-color:gold;" @click="toggleFinder"></div>
+          <div class="circle" style="background-color:limegreen;"></div>
         </div>
         <div class="title-bar">
           <span class="title">{{ windowTitle }}</span>
         </div>
       </div>
-      <div class="window-content">
-        <TerminalEmu v-if="!showFinder" :inputLabel="label"/>
-        <FinderEmu v-if="showFinder"/>
-      </div>
+      <TerminalEmu v-if="!showFinder" :inputLabel="label"/>
+      <FinderEmu v-if="showFinder"/>
     </div>
   </div>
 </template>
@@ -47,119 +45,44 @@ onUnmounted(() => {
 .container {
   display: flex;
   justify-content: center;
-  padding: 0 20px;
 }
 
 .window {
-  width: 100%;
-  max-width: 900px;
   height: 50vh;
-  min-height: 300px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+  width: 70%;
+  overflow: auto;
 }
 
 .bar {
-  height: 28px;
-  min-height: 28px;
+  position: absolute;
+  width: inherit;
+  height: 20px;
   background-color: #DBDBDB;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  position: relative;
+  z-index: 99 !important;
 }
 
 .circle-bar {
   display: flex;
-  gap: 6px;
-  z-index: 2;
+  justify-content: left;
 }
 
 .circle {
-  width: 12px;
-  height: 12px;
+  z-index: 2;
+  margin: 3px;
+  background-color: #fd9494;
   border-radius: 50%;
   border: #cccccc solid 1px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.circle:hover {
-  opacity: 0.8;
-}
-
-.circle.close {
-  background-color: #ff5f57;
-}
-
-.circle.minimize {
-  background-color: #ffbd2e;
-}
-
-.circle.maximize {
-  background-color: #28c840;
+  width: 12px;
+  height: 12px;
 }
 
 .title-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 13px;
-  color: #4d4d4d;
-  pointer-events: none;
-}
-
-.window-content {
-  flex: 1;
-  overflow: auto;
-}
-
-/* Tablet */
-@media (max-width: 1024px) {
-  .container {
-    padding: 0 15px;
-  }
-
-  .window {
-    height: 45vh;
-  }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 10px;
-  }
-
-  .window {
-    height: 40vh;
-    min-height: 250px;
-  }
-
-  .bar {
-    height: 24px;
-    min-height: 24px;
-  }
-
-  .circle {
-    width: 10px;
-    height: 10px;
-  }
-
-  .title-bar {
-    font-size: 12px;
-  }
-}
-
-/* Small mobile */
-@media (max-width: 480px) {
-  .window {
-    height: 35vh;
-    min-height: 200px;
-  }
+  z-index: 1;
+  top: -20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

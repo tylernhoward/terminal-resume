@@ -119,26 +119,14 @@ const projectDataMap = new Map<string, ProjectData>([
 .finder {
   color: black;
   background-color: white;
-  height: 100%;
   overflow: auto;
-  padding: 10px;
+  height: inherit;
 }
 
 .grid {
   display: flex;
   justify-content: center;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 5px;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .finder {
-    padding: 5px;
-  }
-
-  .grid {
-    gap: 0;
-  }
 }
 </style>
