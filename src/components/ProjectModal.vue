@@ -5,19 +5,29 @@
         <div class="modal-wrapper">
           <div class="modal-container" @click.stop>
             <div class="modal-bar">
-              <div class="modal-close" @click="closeModal"></div>
+              <div class="modal-traffic-lights">
+                <button class="modal-close" @click="closeModal" aria-label="Close">
+                  <svg viewBox="0 0 12 12"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </button>
+                <div class="modal-circle minimize"></div>
+                <div class="modal-circle maximize"></div>
+              </div>
               <span class="modal-header">{{ name }}</span>
             </div>
             <div class="modal-body">
-              <img class="image-box" v-if="project?.image" :src="project.image" :alt="name"/>
+              <div class="modal-image-container" v-if="project?.image">
+                <img class="image-box" :src="project.image" :alt="name"/>
+              </div>
               <div class="description">
                 <p>{{ project?.description }}</p>
                 <div class="btn-group">
-                  <a class="modal-btn" v-if="project?.githubUrl" :href="project.githubUrl" target="_blank" rel="noopener">
-                    <i class="fab fa-github"></i> Github
+                  <a class="modal-btn github" v-if="project?.githubUrl" :href="project.githubUrl" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-github"></i>
+                    <span>View on GitHub</span>
                   </a>
-                  <a class="modal-btn" v-if="project?.exploreUrl" :href="project.exploreUrl" target="_blank" rel="noopener">
-                    <i class="far fa-compass"></i> Explore
+                  <a class="modal-btn explore" v-if="project?.exploreUrl" :href="project.exploreUrl" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>Explore</span>
                   </a>
                 </div>
               </div>
@@ -55,18 +65,12 @@ function closeModal() {
   showModal.value = false
 }
 
-function handleEscape(e: KeyboardEvent) {
-  if (e.key === 'Escape') closeModal()
-}
-
 onMounted(() => {
   eventBus.on('toggle-modal', handleToggleModal)
-  document.addEventListener('keydown', handleEscape)
 })
 
 onUnmounted(() => {
   eventBus.off('toggle-modal', handleToggleModal)
-  document.removeEventListener('keydown', handleEscape)
 })
 </script>
 
@@ -74,11 +78,9 @@ onUnmounted(() => {
 .modal-mask {
   position: fixed;
   z-index: 1000;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,58 +89,112 @@ onUnmounted(() => {
 
 .modal-wrapper {
   width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow: auto;
+  max-width: 700px;
 }
 
 .modal-container {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow:
+    0 22px 70px 4px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .modal-bar {
-  background-color: #e8e8e8;
-  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  height: 38px;
+  background: linear-gradient(180deg, #E8E8E8 0%, #D4D4D4 100%);
+  border-bottom: 1px solid #B8B8B8;
+  padding: 0 12px;
+  position: relative;
+}
+
+.modal-traffic-lights {
+  display: flex;
+  gap: 8px;
+  z-index: 2;
 }
 
 .modal-close {
   width: 12px;
   height: 12px;
-  background-color: #ff5f57;
   border-radius: 50%;
+  border: none;
+  background: linear-gradient(180deg, #FF6058 0%, #E14640 100%);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
   cursor: pointer;
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: filter 0.15s ease;
+}
+
+.modal-close svg {
+  width: 8px;
+  height: 8px;
+  opacity: 0;
+  color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.15s ease;
+}
+
+.modal-bar:hover .modal-close svg {
+  opacity: 1;
 }
 
 .modal-close:hover {
-  opacity: 0.8;
+  filter: brightness(0.9);
+}
+
+.modal-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.modal-circle.minimize {
+  background: linear-gradient(180deg, #FFBF2F 0%, #DEA514 100%);
+}
+
+.modal-circle.maximize {
+  background: linear-gradient(180deg, #2ACB42 0%, #1AAB29 100%);
 }
 
 .modal-header {
-  font-size: 14px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
   color: #333;
-  font-weight: 500;
+  letter-spacing: -0.2px;
 }
 
 .modal-body {
   display: flex;
-  padding: 20px;
-  gap: 20px;
+  gap: 24px;
+  padding: 24px;
+}
+
+.modal-image-container {
+  flex: 0 0 45%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .image-box {
-  width: 45%;
-  max-width: 350px;
+  width: 100%;
   height: auto;
-  object-fit: contain;
-  border-radius: 4px;
-  flex-shrink: 0;
+  display: block;
 }
 
 .description {
@@ -146,43 +202,67 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-align: left;
 }
 
 .description p {
-  line-height: 1.7;
-  margin: 0 0 15px 0;
   font-size: 14px;
-  color: #444;
+  line-height: 1.7;
+  color: #333;
+  margin: 0 0 20px 0;
 }
 
 .btn-group {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .modal-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: #333;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
   text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  background-color: #f0f0f0;
   font-size: 13px;
-  transition: all 0.2s;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.modal-btn:hover {
-  background-color: #28262C;
-  color: #87FF65;
+.modal-btn.github {
+  background: #24292F;
+  color: white;
 }
 
-/* Transitions */
-.modal-enter-active,
+.modal-btn.github:hover {
+  background: #1B1F23;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-btn.explore {
+  background: linear-gradient(180deg, #007AFF 0%, #0056CC 100%);
+  color: white;
+}
+
+.modal-btn.explore:hover {
+  background: linear-gradient(180deg, #0066DD 0%, #004499 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.modal-btn i {
+  font-size: 14px;
+}
+
+/* Vue 3 Transition classes */
+.modal-enter-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .modal-leave-active {
-  transition: opacity 0.25s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-enter-from,
@@ -190,82 +270,55 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-.modal-enter-active .modal-container,
-.modal-leave-active .modal-container {
-  transition: transform 0.25s ease;
-}
-
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
-  transform: scale(0.95);
+  transform: scale(0.95) translateY(10px);
 }
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .modal-body {
-    padding: 15px;
-    gap: 15px;
-  }
-
-  .image-box {
-    width: 40%;
-  }
-
-  .description p {
-    font-size: 13px;
-  }
-}
-
-/* Mobile - stack vertically */
-@media (max-width: 768px) {
+@media only screen and (max-width: 768px) {
   .modal-mask {
-    padding: 10px;
+    padding: 12px;
+  }
+
+  .modal-bar {
+    height: 32px;
   }
 
   .modal-body {
     flex-direction: column;
-    padding: 15px;
-    gap: 15px;
+    padding: 16px;
+    gap: 16px;
   }
 
-  .image-box {
-    width: 100%;
-    max-width: none;
-    max-height: 200px;
-    object-fit: cover;
+  .modal-image-container {
+    flex: none;
   }
 
   .description p {
     font-size: 13px;
-    line-height: 1.6;
   }
 
   .btn-group {
     justify-content: center;
   }
-
-  .modal-btn {
-    padding: 10px 20px;
-  }
 }
 
-/* Small mobile */
-@media (max-width: 480px) {
+@media only screen and (max-width: 480px) {
+  .modal-mask {
+    padding: 8px;
+  }
+
   .modal-header {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .modal-body {
     padding: 12px;
   }
 
-  .description p {
-    font-size: 12px;
-  }
-
   .modal-btn {
+    padding: 8px 12px;
     font-size: 12px;
-    padding: 8px 14px;
   }
 }
 </style>
