@@ -2,12 +2,14 @@
   <div id="app">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <FloatingActionButton id="fab"/>
-    <Greeting id="greeting" :msg="greetingMsg"/>
-    <Window id="window"/>
-    <div class="footer">
+    <main class="content">
+      <Greeting id="greeting" :msg="greetingMsg"/>
+      <Window id="window"/>
+    </main>
+    <footer class="footer">
       <span class="left-align">Made with <i class="far fa-heart"/> using <a class="link fab fa-vuejs" href="https://vuejs.org" role="button"/></span>
       <span class="right-align">Updated: {{ updatedDate }}</span>
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -21,43 +23,8 @@ const updatedDate = new Date().getFullYear().toString()
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #171D1C;
-}
-
-@media only screen and (max-width : 700px) {
-  #window {
-    display: none !important;
-  }
-  #greeting {
-    padding-top: 15vh;
-  }
-}
-
-.left-align {
-  padding-left: 5px;
-  float: left;
-}
-
-.right-align {
-  padding-right: 5px;
-  float: right;
-}
-
-.footer {
-  font-size: 10pt;
-  width: 100%;
-  position: fixed;
-  text-align: left;
-  border-top: #cccccc solid 1px;
-  background-color: #DBDBDB;
-  height: 20px;
-  left: 0;
-  bottom: 0;
+* {
+  box-sizing: border-box;
 }
 
 body, html {
@@ -68,8 +35,68 @@ body, html {
   padding: 0;
 }
 
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #171D1C;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding-bottom: 30px;
+}
+
+.left-align {
+  padding-left: 10px;
+  float: left;
+}
+
+.right-align {
+  padding-right: 10px;
+  float: right;
+}
+
+.footer {
+  font-size: 10pt;
+  width: 100%;
+  position: fixed;
+  text-align: left;
+  border-top: #cccccc solid 1px;
+  background-color: #DBDBDB;
+  height: 24px;
+  line-height: 24px;
+  left: 0;
+  bottom: 0;
+  z-index: 50;
+}
+
 .link {
   color: #171D1C;
   text-decoration: none;
+}
+
+/* Mobile: stack vertically, compact spacing */
+@media (max-width: 768px) {
+  .content {
+    padding: 10px;
+    padding-bottom: 34px;
+  }
+
+  .footer {
+    font-size: 9pt;
+  }
+
+  .left-align {
+    padding-left: 5px;
+  }
+
+  .right-align {
+    padding-right: 5px;
+  }
 }
 </style>
