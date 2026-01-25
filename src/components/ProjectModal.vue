@@ -1,66 +1,69 @@
 <template>
-<!-- template for the modal component -->
   <div name="modal" v-if="showModal">
-    <div class="modal-mask" @click="$root.$emit('toggle-modal')">
+    <div class="modal-mask" @click="closeModal">
       <div class="modal-wrapper">
-        <div class="modal-container" @click="$root.$emit('toggle-modal')">
-            <div class= "modal-bar">
-                <div class="modal-close" @click="$root.$emit('toggle-modal')"></div>
-                <span class="modal-header">{{ name }}</span>
+        <div class="modal-container" @click.stop>
+          <div class="modal-bar">
+            <div class="modal-close" @click="closeModal"></div>
+            <span class="modal-header">{{ name }}</span>
+          </div>
+          <div class="modal-body">
+            <img class="image-box" v-if="project?.image" :src="project.image"/>
+            <div class="description">
+              <p>{{ project?.description }}</p>
+              <div class="btn-group">
+                <a class="modal-btn" v-if="project?.githubUrl" :href="project.githubUrl" target="_blank">Github <i class="fab fa-github"></i></a>
+                <a class="modal-btn" v-if="project?.exploreUrl" :href="project.exploreUrl" target="_blank">Explore <i class="far fa-compass"></i></a>
+              </div>
             </div>
-            <div class="modal-body">
-                <img class="image-box" v-if= "project.image" v-bind:src ="project.image"/>
-                <div class ="description"> 
-                    <p>{{ project.description }}</p>
-                    <div class="btn-group">
-                        <a class = "modal-btn" v-if ="project.githubUrl" v-bind:href="project.githubUrl" target="_blank">Github <i class="fab fa-github"></i></a>
-                        <a class = "modal-btn" v-if ="project.exploreUrl" v-bind:href="project.exploreUrl" target="_blank">Explore <i class="far fa-compass"></i></a>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
       </div>
     </div>
-</div>
+  </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import type { ProjectData } from './ProjectData'
+import { eventBus } from '../eventBus'
 
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import {ProjectData} from './ProjectData'
+const props = defineProps<{
+  data: Map<string, ProjectData>
+}>()
 
-@Component({
-  props: {
-      data: Map
-  },
-  data () {
-    return {    
-        showModal: false,
-        name:'',
-        project:<ProjectData>{}
-   }
+const showModal = ref(false)
+const name = ref('')
+const project = ref<ProjectData | undefined>(undefined)
+
+function handleToggleModal(projectName: string | undefined) {
+  if (projectName) {
+    const projectInfo = props.data.get(projectName)
+    name.value = projectName
+    project.value = projectInfo
   }
+  showModal.value = !showModal.value
+}
+
+function closeModal() {
+  showModal.value = false
+}
+
+onMounted(() => {
+  eventBus.on('toggle-modal', handleToggleModal)
 })
 
-export default class ProjectModal extends Vue {
- created(){
-    const projectMap = this.$props.data;
-    this.$root.$on('toggle-modal', (project:string) =>{
-        const projectInfo: ProjectData  = projectMap.get(project);
-        this.$data.name = project;
-        this.$data.project = projectInfo;
-        this.$data.showModal = !this.$data.showModal;
-    });
-  }
-}
+onUnmounted(() => {
+  eventBus.off('toggle-modal', handleToggleModal)
+})
 </script>
 
 <style scoped>
-
-p{
-  line-height:2;
-  padding:10px;
+p {
+  line-height: 2;
+  padding: 10px;
 }
+
 .modal-mask {
   position: fixed;
   z-index: 100;
@@ -80,7 +83,7 @@ p{
 
 .modal-container {
   width: 70%;
-  height:fit-content;
+  height: fit-content;
   margin: 0px auto;
   background-color: #fff;
   border-radius: 6px;
@@ -88,69 +91,66 @@ p{
   transition: all .3s ease;
 }
 
-.modal-bar{
-    border-radius: 6px 6px 0px 0px;
-    background-color: gainsboro;
-    width:100%;
-    height:20px;
+.modal-bar {
+  border-radius: 6px 6px 0px 0px;
+  background-color: gainsboro;
+  width: 100%;
+  height: 20px;
 }
+
 .modal-close {
-    z-index:2;
-    margin: 3px;
-    background-color: tomato;
-    border-radius: 50%;
-    border:#cccccc solid 1px;
-    width: 12px;
-    height: 12px;
-    position: relative;
-    top: 0;
-    float: left;
+  z-index: 2;
+  margin: 3px;
+  background-color: tomato;
+  border-radius: 50%;
+  border: #cccccc solid 1px;
+  width: 12px;
+  height: 12px;
+  position: relative;
+  top: 0;
+  float: left;
+  cursor: pointer;
 }
+
 .modal-body {
-  display:flex;
-  padding:10px;
-}
-.image-box{
-    width: 50%;
-    height:100%;
-}
-.description{
-    width: 100%;
-    display:flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-left: 20px;
-    text-align: left;
-}
-.btn-group{
-    width:100%;
-    display: flex;
-    justify-content: center;
-}
-.modal-btn{
-    color: black;
-    text-decoration: none;
-    width:fit-content;
-    padding:5px;
-    margin: 0px 5px;
-    border-radius:5px 5px 5px 5px;
-    background-color:gainsboro;
-
-}
-.modal-btn:hover{
-    padding:4px;
-    border: #87FF65 solid 1px;
+  display: flex;
+  padding: 10px;
 }
 
+.image-box {
+  width: 50%;
+  height: 100%;
+}
 
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
+.description {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.btn-group {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.modal-btn {
+  color: black;
+  text-decoration: none;
+  width: fit-content;
+  padding: 5px;
+  margin: 0px 5px;
+  border-radius: 5px 5px 5px 5px;
+  background-color: gainsboro;
+}
+
+.modal-btn:hover {
+  padding: 4px;
+  border: #87FF65 solid 1px;
+}
 
 .modal-enter {
   opacity: 0;
