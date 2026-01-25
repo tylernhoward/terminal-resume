@@ -1,87 +1,196 @@
 <template>
-  <div id="menu-interaction">
-    <div class="menu-button" @click="showMenu = !showMenu">
-      <i class="fas fa-bars"></i>
-    </div>
-    <div class="menu-container" v-if="showMenu">
-      <div class="arrow-up"></div>
-      <div class="menu" @mouseleave="showMenu = false">
-        <a class="menu-item" href="/Tyler_Howard_Resume.pdf">Resume</a>
-        <a class="menu-item" href="/ISI_2018_paper_108.pdf">Articles / Publications</a>
-        <a class="menu-item" href="https://tylernhoward.github.io/old-site">Old Site</a>
-        <a class="menu-item" href="https://tylernhoward.github.io/markdowner">Markdown Editor</a>
-      </div>
-    </div>
+  <div class="fab-container">
+    <button
+      class="fab-button"
+      :class="{ 'is-open': showMenu }"
+      @click="showMenu = !showMenu"
+      aria-label="Menu"
+    >
+      <span class="fab-icon">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </span>
+    </button>
+
+    <Transition name="menu">
+      <nav v-if="showMenu" class="fab-menu" @click.stop>
+        <a
+          v-for="item in menuItems"
+          :key="item.label"
+          :href="item.href"
+          class="menu-item"
+          :target="item.external ? '_blank' : undefined"
+          :rel="item.external ? 'noopener noreferrer' : undefined"
+        >
+          <i :class="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </nav>
+    </Transition>
+
+    <Transition name="fade">
+      <div v-if="showMenu" class="backdrop" @click="showMenu = false"></div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const showMenu = ref(false)
+
+const menuItems = [
+  { label: 'Resume', href: '/Tyler_Howard_Resume.pdf', icon: 'fas fa-file-alt', external: false },
+  { label: 'Publications', href: '/ISI_2018_paper_108.pdf', icon: 'fas fa-book', external: false },
+  { label: 'Old Site', href: 'https://tylernhoward.github.io/old-site', icon: 'fas fa-history', external: true },
+  { label: 'Markdown Editor', href: 'https://tylernhoward.github.io/markdowner', icon: 'fas fa-edit', external: true },
+]
+
+function handleEscape(e: KeyboardEvent) {
+  if (e.key === 'Escape') showMenu.value = false
+}
+
+onMounted(() => document.addEventListener('keydown', handleEscape))
+onUnmounted(() => document.removeEventListener('keydown', handleEscape))
 </script>
 
-<style>
-.menu-button {
+<style scoped>
+.fab-container {
   position: fixed;
-  right: 40px;
   top: 20px;
+  right: 24px;
+  z-index: 1000;
+}
+
+.fab-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #28262C;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background-color: #28262C;
-  color: #F7F9F9;
-  height: 35px;
-  width: 35px;
-  transition: transform 1s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.menu-button:hover {
-  transform: rotate(90deg);
-  color: #F7F9F9;
-  background-color: #138A36;
-  text-decoration: none;
-  cursor: pointer;
+.fab-button:hover {
+  background: #138A36;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(19, 138, 54, 0.3);
+}
+
+.fab-button.is-open {
+  background: #138A36;
+}
+
+.fab-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 20px;
+}
+
+.bar {
+  height: 2px;
+  background: #F7F9F9;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-button.is-open .bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.fab-button.is-open .bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.fab-button.is-open .bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.fab-menu {
+  position: absolute;
+  top: 54px;
+  right: 0;
+  background: #28262C;
+  border-radius: 12px;
+  padding: 8px 0;
+  min-width: 180px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
 
 .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
   color: #F7F9F9;
   text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #87FF65;
+  transform: scaleY(0);
+  transition: transform 0.2s ease;
 }
 
 .menu-item:hover {
+  background: rgba(135, 255, 101, 0.1);
   color: #87FF65;
-  text-decoration: none;
-  cursor: pointer;
 }
 
-.arrow-up {
-  position: fixed;
-  right: 47px;
-  top: 60px;
-  width: 0;
-  height: 0;
-  opacity: 0.9;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #28262C;
+.menu-item:hover::before {
+  transform: scaleY(1);
 }
 
-.menu {
-  z-index: 999 !important;
+.menu-item i {
+  width: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.backdrop {
   position: fixed;
-  border-radius: 10px 0px 0px 10px;
-  opacity: 0.9;
-  right: -5px;
-  height: 300px;
-  width: 150px;
-  top: 70px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  background-color: #28262C;
-  color: #F7F9F9;
+  inset: 0;
+  z-index: -1;
+}
+
+/* Transitions */
+.menu-enter-active,
+.menu-leave-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top right;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
+  transform: scale(0.9) translateY(-10px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
