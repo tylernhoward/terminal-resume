@@ -1,5 +1,5 @@
 <template>
-  <a class="item" @click="eventBus.emit('toggle-modal', name)">
+  <a class="item" @click="$emit('click')">
     <div class="folder">
       <div class="folder-back"></div>
       <div class="folder-tab"></div>
@@ -10,10 +10,12 @@
 </template>
 
 <script setup lang="ts">
-import { eventBus } from '../eventBus'
-
 defineProps<{
   name: string
+}>()
+
+defineEmits<{
+  click: []
 }>()
 </script>
 

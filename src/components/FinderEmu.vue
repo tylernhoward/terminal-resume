@@ -2,17 +2,17 @@
   <div class="finder">
     <div class="finder-toolbar">
       <div class="toolbar-left">
-        <button class="toolbar-btn" disabled>
+        <button class="toolbar-btn" :disabled="!canGoBack" @click="goBack">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.5 3L5.5 8l5 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="toolbar-btn" disabled>
+        <button class="toolbar-btn" :disabled="!canGoForward" @click="goForward">
           <svg viewBox="0 0 16 16" fill="currentColor"><path d="M5.5 3L10.5 8l-5 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
       <div class="toolbar-center">
         <div class="breadcrumb">
-          <span class="breadcrumb-icon">📁</span>
-          <span class="breadcrumb-text">Projects</span>
+          <span class="breadcrumb-icon">{{ currentLocation.type === 'root' ? '📁' : '📂' }}</span>
+          <span class="breadcrumb-text">{{ breadcrumbText }}</span>
         </div>
       </div>
       <div class="toolbar-right">
@@ -28,29 +28,49 @@
     </div>
     <div class="finder-content">
       <div class="grid">
-        <FinderItem name="CLARK"/>
-        <FinderItem name="Security Injections"/>
-        <FinderItem name="Markdown Editor"/>
-        <FinderItem name="Job Jar"/>
-        <FinderItem name="Lol CLI"/>
-        <FinderItem name="Phishing Visualization"/>
-        <FinderItem name="WWYDH"/>
-        <FinderItem name="Photo Spot"/>
-        <FinderItem name="HeRO"/>
-        <FinderItem name="Morning Briefing"/>
+        <!-- Root view: show project folders -->
+        <template v-if="currentLocation.type === 'root'">
+          <FinderItem
+            v-for="name in projectNames"
+            :key="name"
+            :name="name"
+            @click="navigateToProject(name)"
+          />
+        </template>
+        <!-- Project view: show files -->
+        <template v-else>
+          <FileItem
+            v-for="file in currentProjectFiles"
+            :key="file.name"
+            :file="file"
+            @open-file="handleFileOpen(file)"
+          />
+        </template>
       </div>
     </div>
     <div class="finder-status">
-      <span>10 items</span>
+      <span>{{ statusText }}</span>
     </div>
-    <ProjectModal :data="projectDataMap"/>
+    <FileModal
+      :show="showFileModal"
+      :file="activeFile"
+      @close="showFileModal = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import FinderItem from './FinderItem.vue'
-import ProjectModal from './ProjectModal.vue'
-import type { ProjectData } from './ProjectData'
+import FileItem from './FileItem.vue'
+import FileModal from './FileModal.vue'
+import type { ProjectData, FileItem as FileItemType } from './ProjectData'
+import { useFinderNavigation } from '../composables/useFinderNavigation'
+
+const { currentLocation, canGoBack, canGoForward, navigateTo, goBack, goForward } = useFinderNavigation()
+
+const showFileModal = ref(false)
+const activeFile = ref<FileItemType | null>(null)
 
 enum Projects {
   CLARK = 'CLARK',
@@ -65,20 +85,19 @@ enum Projects {
   MorningBriefing = 'Morning Briefing'
 }
 
+const projectNames = Object.values(Projects)
+
 const projectDataMap = new Map<string, ProjectData>([
   [Projects.CLARK, {
     description: `Developer on team responsible for implementing a Cybersecurity curriculum management platform to curate and share learning objectives in academia.
-    Application uses new web technologies and the MEAN stack as part of a project funded by the National Science Foundation.`,
+Application uses new web technologies and the MEAN stack as part of a project funded by the National Science Foundation.`,
     image: 'clark.png',
     githubUrl: '',
     exploreUrl: 'https://clark.center'
   }],
   [Projects.SecurityInjections, {
-    description: `Worked for the Computer and Information Sciences department in a small team as a lead developer responsible
-      for developing a web application used as a instructional tool for introductory Computer Science students
-      and other cyber-related majors.
-      The current iteration is a single-page web application that makes use of the Angular JavaScript framework and
-      template-based storage in order to dynamically generate instructional content from JSON.`,
+    description: `Worked for the Computer and Information Sciences department in a small team as a lead developer responsible for developing a web application used as a instructional tool for introductory Computer Science students and other cyber-related majors.
+The current iteration is a single-page web application that makes use of the Angular JavaScript framework and template-based storage in order to dynamically generate instructional content from JSON.`,
     image: 'threeo.jpg',
     githubUrl: '',
     exploreUrl: 'http://cis1.towson.edu/~cyber4all/modules/nanomodules/Integer_Error-CS0_C++_Demo.html'
@@ -102,19 +121,15 @@ const projectDataMap = new Map<string, ProjectData>([
     exploreUrl: ''
   }],
   [Projects.PhishingVisualization, {
-    description: `Angular based application aimed at visualizing current online phishing threats across the world. Data is retrieved
-      from PhishTank, and is presented in the form of geo-location data on a map, dynamic charts, and a filterable grid.
-      Makes use of the PhishTank API, Google Maps API, and FreeGeoIP API.`,
+    description: `Angular based application aimed at visualizing current online phishing threats across the world. Data is retrieved from PhishTank, and is presented in the form of geo-location data on a map, dynamic charts, and a filterable grid.
+Makes use of the PhishTank API, Google Maps API, and FreeGeoIP API.`,
     image: 'phishVisual.jpg',
     githubUrl: 'https://github.com/tylernhoward/phishing-threats',
     exploreUrl: 'http://phishing-threats.herokuapp.com'
   }],
   [Projects.WWYDH, {
-    description: `What Would You Do Here?: A semester project that involved continuing development on a web application for a nonprofit client. This application
-      aimed to encourage community involvement in Baltimore City, MD by making use of vacant lots for user-suggested projects
-      and events.
-      This project manifested as a PHP based website that relied on a mySQL database and several APIs. Used the Agile development
-      process to gather the client's requirements and input throughout the semester.`,
+    description: `What Would You Do Here?: A semester project that involved continuing development on a web application for a nonprofit client. This application aimed to encourage community involvement in Baltimore City, MD by making use of vacant lots for user-suggested projects and events.
+This project manifested as a PHP based website that relied on a mySQL database and several APIs. Used the Agile development process to gather the client's requirements and input throughout the semester.`,
     image: 'wwydh.jpg',
     githubUrl: 'https://github.com/tylernhoward/wwydh',
     exploreUrl: 'http://wwydh-2017.herokuapp.com'
@@ -126,24 +141,92 @@ const projectDataMap = new Map<string, ProjectData>([
     exploreUrl: ''
   }],
   [Projects.HeRO, {
-    description: `Worked in a small team through the Office and Technology Services at Towson University to create and deploy
-      a desktop application written in Visual Basic.
-      The application is a run-on-startup tool that provides help resources, videos, and relevant campus alerts to
-      instructor workstations throughout multiple campuses of Towson University. To ensure reliability across different
-      machines, the tool relies only on access to the web and a shared drive.`,
+    description: `Worked in a small team through the Office and Technology Services at Towson University to create and deploy a desktop application written in Visual Basic.
+The application is a run-on-startup tool that provides help resources, videos, and relevant campus alerts to instructor workstations throughout multiple campuses of Towson University. To ensure reliability across different machines, the tool relies only on access to the web and a shared drive.`,
     image: 'hero.jpg',
     githubUrl: '',
     exploreUrl: ''
   }],
   [Projects.MorningBriefing, {
-    description: `ASP.net application aimed at providing a dashboard for users with information regarding weather, news, and todos. Makes
-      use of the OpenWeatherMap API and the News API. Also includes globalization, theming, and the Entity framework among
-      other features.`,
+    description: `ASP.net application aimed at providing a dashboard for users with information regarding weather, news, and todos. Makes use of the OpenWeatherMap API and the News API. Also includes globalization, theming, and the Entity framework among other features.`,
     image: 'mornbrief.jpg',
     githubUrl: 'https://github.com/tylernhoward/morning-briefing',
     exploreUrl: ''
   }],
 ])
+
+const breadcrumbText = computed(() => {
+  if (currentLocation.value.type === 'root') {
+    return 'Projects'
+  }
+  return currentLocation.value.projectName
+})
+
+const currentProjectFiles = computed<FileItemType[]>(() => {
+  if (currentLocation.value.type !== 'project') return []
+
+  const projectName = currentLocation.value.projectName
+  const project = projectDataMap.get(projectName)
+  if (!project) return []
+
+  const files: FileItemType[] = []
+
+  // Always add README.txt with description
+  files.push({
+    name: 'README.txt',
+    type: 'text',
+    content: project.description
+  })
+
+  // Add screenshot.png if image exists
+  if (project.image) {
+    files.push({
+      name: 'screenshot.png',
+      type: 'image',
+      content: project.image
+    })
+  }
+
+  // Add GitHub.webloc if URL exists
+  if (project.githubUrl) {
+    files.push({
+      name: 'GitHub.webloc',
+      type: 'link-github',
+      content: project.githubUrl
+    })
+  }
+
+  // Add Demo.webloc if explore URL exists
+  if (project.exploreUrl) {
+    files.push({
+      name: 'Demo.webloc',
+      type: 'link-explore',
+      content: project.exploreUrl
+    })
+  }
+
+  return files
+})
+
+const statusText = computed(() => {
+  if (currentLocation.value.type === 'root') {
+    return `${projectNames.length} items`
+  }
+  return `${currentProjectFiles.value.length} items`
+})
+
+function navigateToProject(name: string) {
+  navigateTo({ type: 'project', projectName: name })
+}
+
+function handleFileOpen(file: FileItemType) {
+  if (file.type === 'link-github' || file.type === 'link-explore') {
+    window.open(file.content, '_blank', 'noopener,noreferrer')
+  } else {
+    activeFile.value = file
+    showFileModal.value = true
+  }
+}
 </script>
 
 <style scoped>

@@ -1,35 +1,27 @@
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <div v-if="showModal" class="modal-mask" @click="closeModal">
+      <div v-if="show" class="modal-mask" @click="$emit('close')">
         <div class="modal-wrapper">
-          <div class="modal-container" @click.stop>
+          <div class="modal-container" :class="{ 'image-modal': file?.type === 'image' }" @click.stop>
             <div class="modal-bar">
               <div class="modal-traffic-lights">
-                <button class="modal-close" @click="closeModal" aria-label="Close">
+                <button class="modal-close" @click="$emit('close')" aria-label="Close">
                   <svg viewBox="0 0 12 12"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 </button>
                 <div class="modal-circle minimize"></div>
                 <div class="modal-circle maximize"></div>
               </div>
-              <span class="modal-header">{{ name }}</span>
+              <span class="modal-header">{{ file?.name }}</span>
             </div>
             <div class="modal-body">
-              <div class="modal-image-container" v-if="project?.image">
-                <img class="image-box" :src="project.image" :alt="name"/>
+              <!-- Text content -->
+              <div v-if="file?.type === 'text'" class="text-content">
+                <p>{{ file.content }}</p>
               </div>
-              <div class="description">
-                <p>{{ project?.description }}</p>
-                <div class="btn-group">
-                  <a class="modal-btn github" v-if="project?.githubUrl" :href="project.githubUrl" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-github"></i>
-                    <span>View on GitHub</span>
-                  </a>
-                  <a class="modal-btn explore" v-if="project?.exploreUrl" :href="project.exploreUrl" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-external-link-alt"></i>
-                    <span>Explore</span>
-                  </a>
-                </div>
+              <!-- Image content -->
+              <div v-else-if="file?.type === 'image'" class="image-content">
+                <img :src="file.content" :alt="file.name" />
               </div>
             </div>
           </div>
@@ -40,38 +32,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import type { ProjectData } from './ProjectData'
-import { eventBus } from '../eventBus'
+import type { FileItem } from './ProjectData'
 
-const props = defineProps<{
-  data: Map<string, ProjectData>
+defineProps<{
+  show: boolean
+  file: FileItem | null
 }>()
 
-const showModal = ref(false)
-const name = ref('')
-const project = ref<ProjectData | undefined>(undefined)
-
-function handleToggleModal(projectName: string | undefined) {
-  if (projectName) {
-    const projectInfo = props.data.get(projectName)
-    name.value = projectName
-    project.value = projectInfo
-  }
-  showModal.value = !showModal.value
-}
-
-function closeModal() {
-  showModal.value = false
-}
-
-onMounted(() => {
-  eventBus.on('toggle-modal', handleToggleModal)
-})
-
-onUnmounted(() => {
-  eventBus.off('toggle-modal', handleToggleModal)
-})
+defineEmits<{
+  close: []
+}>()
 </script>
 
 <style scoped>
@@ -89,7 +59,7 @@ onUnmounted(() => {
 
 .modal-wrapper {
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
 }
 
 .modal-container {
@@ -100,6 +70,10 @@ onUnmounted(() => {
     0 22px 70px 4px rgba(0, 0, 0, 0.25),
     0 0 0 1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+}
+
+.modal-container.image-modal {
+  max-width: 800px;
 }
 
 .modal-bar {
@@ -179,81 +153,47 @@ onUnmounted(() => {
 }
 
 .modal-body {
-  display: flex;
-  gap: 24px;
   padding: 24px;
 }
 
-.modal-image-container {
-  flex: 0 0 45%;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.text-content {
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-.image-box {
-  width: 100%;
-  height: auto;
-  display: block;
+.text-content::-webkit-scrollbar {
+  width: 10px;
 }
 
-.description {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: left;
+.text-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.description p {
+.text-content::-webkit-scrollbar-thumb {
+  background: #C7C7CC;
+  border-radius: 5px;
+  border: 2px solid #FFFFFF;
+}
+
+.text-content p {
   font-size: 14px;
   line-height: 1.7;
   color: #333;
-  margin: 0 0 20px 0;
+  margin: 0;
+  white-space: pre-wrap;
 }
 
-.btn-group {
+.image-content {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.modal-btn {
-  display: inline-flex;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+}
+
+.image-content img {
+  max-width: 100%;
+  max-height: 500px;
   border-radius: 8px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.modal-btn.github {
-  background: #24292F;
-  color: white;
-}
-
-.modal-btn.github:hover {
-  background: #1B1F23;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.modal-btn.explore {
-  background: linear-gradient(180deg, #007AFF 0%, #0056CC 100%);
-  color: white;
-}
-
-.modal-btn.explore:hover {
-  background: linear-gradient(180deg, #0066DD 0%, #004499 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-}
-
-.modal-btn i {
-  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Vue 3 Transition classes */
@@ -285,21 +225,19 @@ onUnmounted(() => {
   }
 
   .modal-body {
-    flex-direction: column;
     padding: 16px;
-    gap: 16px;
   }
 
-  .modal-image-container {
-    flex: none;
+  .text-content {
+    max-height: 300px;
   }
 
-  .description p {
+  .text-content p {
     font-size: 13px;
   }
 
-  .btn-group {
-    justify-content: center;
+  .image-content img {
+    max-height: 350px;
   }
 }
 
@@ -316,9 +254,12 @@ onUnmounted(() => {
     padding: 12px;
   }
 
-  .modal-btn {
-    padding: 8px 12px;
-    font-size: 12px;
+  .text-content {
+    max-height: 250px;
+  }
+
+  .image-content img {
+    max-height: 280px;
   }
 }
 </style>
