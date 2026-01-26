@@ -68,6 +68,10 @@ onUnmounted(() => {
   padding: 0 20px;
 }
 
+.window-content {
+    height: 100%;
+}
+
 .window {
   width: 100%;
   max-width: 900px;
